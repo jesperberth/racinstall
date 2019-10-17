@@ -1,0 +1,201 @@
+---
+- hosts: oracle-rac-nodes
+  become: yes
+  vars:
+    # created with:
+    # python -c 'import crypt; print crypt.crypt("password_goes_here", "$1$SomeSalt$")'
+    user_password: $1$SomeSalt$O6mASBY4g2tQah/L1V9aH/
+    ora_dbname: space
+    ora_sid: space
+    ora_password: Only4Demo
+    ora_spacewalk_user: spacewalk
+    ora_spacewalk_password: Only4Demo
+    spacewalk_organization: Democenter
+    spacewalk_admin: admin
+    spacewalk_password: Only4Demo!
+    
+  tasks:
+    - name: ensure oracle-rdbms-preinstall is installed
+      yum:
+       name:  oracle-rdbms-server-12cR1-preinstall
+       state: latest
+    
+    - name: change SELINUX
+      selinux:
+       policy: targeted
+       state: permissive
+    
+    - name: set oracle user password
+      user: name=oracle password={{ user_password }}
+    
+    # Configure firewall
+    
+    - name: set firewall rules Oracle DB
+      firewalld:
+       zone: public
+       port: 1521/tcp
+       permanent: true
+       state: enabled
+    
+    - name: set firewall rules 5222
+      firewalld:
+       zone: public
+       port: 5222/tcp
+       permanent: true
+       state: enabled
+    
+    - name: set firewall rules 5269
+      firewalld:
+       zone: public
+       port: 5269/tcp
+       permanent: true
+       state: enabled
+
+     # Configure Oracle Prereqs
+    - name: creates directory for oracle install
+      file:
+       path: /u01/app/oracle/product/12.2.0.1/db_1
+       state: directory
+    
+    - name: set owner on directory for oracle install
+      file:
+       path: /u01
+       owner: oracle
+       group: oinstall
+       mode: 0755
+       recurse: yes
+    
+    - name: creates directory for oracle users scripts
+      file:
+       path: /home/oracle/scripts
+       state: directory
+    
+    - name: create setENV.sh file in oracle users scripts
+      template:
+       src: templates/setEnv.j2
+       dest: /home/oracle/scripts/setEnv.sh
+    
+    - name: add setEnv.sh to oracle users bash_profile
+      shell: |
+       echo '. /home/oracle/scripts/setEnv.sh' >> /home/oracle/.bash_profile
+    
+    - name: create start_all.sh file in oracle users scripts
+      template:
+       src: templates/start_all.j2
+       dest: /home/oracle/scripts/start_all.sh
+    
+    - name: create stop_all.sh file in oracle users scripts
+      template:
+       src: templates/stop_all.j2
+       dest: /home/oracle/scripts/stop_all.sh
+    
+    - name: copy createdb file
+      template:
+       src: templates/ora_createdb.j2
+       dest: /home/oracle/scripts/ora_createdb.sh 
+
+    - name: copy createuser file
+      template:
+       src: templates/ora_createuser.j2
+       dest: /home/oracle/ora_createuser.sql
+
+    - name: set owner on directory for oracle user
+      file:
+       path: /home/oracle/
+       owner: oracle
+       group: oinstall
+       recurse: yes
+    
+    - name: set +x on all .sh files in oracle users scripts
+      shell: |
+       chmod u+x /home/oracle/scripts/*.sh
+      args:
+       warn: false
+    
+    - name: add host to /etc/hosts
+      lineinfile:
+       path: /etc/hosts
+       line: '{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}'
+       create: yes
+    
+    - name: extract oracle db installer
+      unarchive:
+       src: /root/install/software/linuxx64_12201_database.zip
+       dest: /home/oracle/
+    
+    - name: create oracle response file
+      template:
+       src: templates/oradb12.j2
+       dest: /home/oracle/database/oradb12.rsp
+    
+    - name: create temp folder
+      file:
+       path: /home/oracle/.ansible/tmp
+       state: directory
+       owner: oracle
+       group: oinstall
+       mode: 0700
+           
+    - name: install oracle db software
+      shell: /home/oracle/database/runInstaller -ignoreSysPrereqs -ignorePrereq -waitforcompletion -silent -responseFile /home/oracle/database/oradb12.rsp
+      become: yes
+      become_user: oracle
+    
+    - name: run oracle post install scripts 1/2
+      shell: /u01/app/oraInventory/orainstRoot.sh
+    
+    - name: run oracle post install scripts 2/2
+      shell: /u01/app/oracle/product/12.2.0.1/db_1/root.sh
+    
+    - name: create dbora.service
+      template:
+       src: templates/dbora.service.j2
+       dest: /lib/systemd/system/dbora.service
+    
+    - name: systemd daemon-reload to pick up config changes
+      systemd:
+       daemon_reload: yes
+    
+    - name: enable service dbora
+      systemd:
+       name: dbora.service
+       enabled: yes
+    
+    - name: start oracle listner
+      shell: runuser -l 'oracle' -c "lsnrctl start"
+      run_once: true
+
+    - name: create new database
+      shell:  runuser -l 'oracle' -c "/home/oracle/scripts/ora_createdb.sh"
+      run_once: true
+
+    - name: enable oracle db at boot
+      lineinfile:
+       dest: /etc/oratab
+       regexp: '^(.*)space:/u01/app/oracle/product/12.2.0.1/db_1:N(.*)$'
+       line: 'space:/u01/app/oracle/product/12.2.0.1/db_1:Y'
+       backrefs: yes
+    
+    - name: create tnsnames.ora
+      template:
+       src: templates/tnsnames.j2
+       dest: /u01/app/oracle/product/12.2.0.1/db_1/network/admin/tnsnames.ora
+
+    - name: create spacewalk user in oracle db
+      shell: runuser -l 'oracle' -c "sqlplus / AS SYSDBA @/home/oracle/ora_createuser.sql"
+    
+    - name: install oracleclient-basic prerequisits
+      yum:
+       name: /root/install/software/oracle-instantclient11.2-basic-11.2.0.4.0-1.x86_64.rpm
+       state: present
+    
+    - name: install oracleclient-sqlplus prerequisits
+      yum:
+       name: /root/install/software/oracle-instantclient11.2-sqlplus-11.2.0.4.0-1.x86_64.rpm
+       state: present
+    
+    - name: configure ldconfig
+      shell: |
+       echo /usr/lib/oracle/11.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient11.2.conf
+       ldconfig
+    

@@ -1,0 +1,14 @@
+#!/bin/bash
+dbca -silent -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbname {{ ora_dbname }} -sid {{ ora_sid }} -responseFile NO_VALUE \
+  -characterSet AL32UTF8 \
+  -sysPassword {{ ora_password }} \
+  -systemPassword {{ ora_password }} \
+  -createAsContainerDatabase false \
+  -numberOfPDBs 1 \
+  -pdbName pdb1 \
+  -pdbAdminPassword {{ ora_password }} \
+  -databaseType MULTIPURPOSE \
+  -automaticMemoryManagement false \
+  -ignorePreReqs

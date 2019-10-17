@@ -1,0 +1,4 @@
+CREATE USER {{ ora_spacewalk_user }} IDENTIFIED BY {{ ora_spacewalk_password }};
+GRANT CONNECT,RESOURCE TO {{ ora_spacewalk_user }};
+GRANT ALTER SESSION, CREATE SYNONYM, CREATE TABLE, CREATE TRIGGER, CREATE VIEW TO {{ ora_spacewalk_user }}; 
+GRANT UNLIMITED TABLESPACE TO {{ ora_spacewalk_user }}; 

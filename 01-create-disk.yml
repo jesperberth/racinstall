@@ -1,0 +1,102 @@
+---
+- hosts: localhost
+  become: yes
+  
+  tasks:
+    # physical
+    - name: create partion /dev/sdb
+      parted:
+       device: /dev/sdb
+       number: 1
+       flags: [ lvm ]
+       state: present
+    
+    - name: create volume group vg.data
+      lvg:
+       vg: vg.data
+       pvs: /dev/sdb1
+    
+    # oracledb
+    
+    - name: create logical oracledb disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.oracledb
+       size: 30G
+    
+    - name: create filesystem xfs on lv.oracledb
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.oracledb
+    
+    - name: create directory for lv.oracledb
+      file:
+       path: /u01
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /u01 
+       src: /dev/mapper/vg.data-lv.oracledb
+       fstype: xfs 
+       opts: defaults
+       state: present
+    
+    # distro-tree
+    
+    - name: create logical distro-tree disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.distrotree
+       size: 10G
+    
+    - name: create filesystem xfs on lv.distrotree
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.distrotree
+    
+    - name: create directory for lv.distrotree
+      file:
+       path: /var/distro-trees
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /var/distro-trees 
+       src: /dev/mapper/vg.data-lv.distrotree
+       fstype: xfs 
+       opts: defaults
+       state: present
+    
+    # satellite
+    
+    - name: create logical satellite disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.satellite
+       size: 30G
+    
+    - name: create filesystem xfs on lv.satellite
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.satellite
+    
+    - name: create directory for lv.satellite
+      file:
+       path: /var/satellite
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /var/satellite 
+       src: /dev/mapper/vg.data-lv.satellite
+       fstype: xfs 
+       opts: defaults
+       state: present
+    
+    # mount all
+    
+    - name: mount disk
+      shell: mount -a
+      args:
+       warn: false
