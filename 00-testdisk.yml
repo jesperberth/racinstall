@@ -1,0 +1,18 @@
+---
+- hosts: oraclerac
+ 
+  tasks:
+    # physical
+    - name: create partion /dev/sdb
+      parted:
+       device: /dev/sdb
+       number: 1
+       state: present
+
+    - name: Get udev id
+      command: '/usr/lib/udev/scsi_id -g -u -d /dev/sdb1'
+      register: disksdb
+
+    - name: Show id
+      debug:
+        var: disksdb
