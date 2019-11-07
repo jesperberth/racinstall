@@ -28,4 +28,5 @@
       lineinfile:
         path: /root/test
         line: "{{ disk_sdb_node1 }}"
+        create: yes
       when: ansible_hostname == "rac-node01"
