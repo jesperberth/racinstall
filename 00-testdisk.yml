@@ -18,3 +18,14 @@
       debug:
         var: disksdbnode1.stdout
       when: ansible_hostname == "rac-node01"
+    
+    - name: set fact disksdbnode1
+      set_fact: 
+        disk_sdb_node1: "{{ disksdbnode1.stdout }}"
+      when: ansible_hostname == "rac-node01"
+
+    - name: test
+      lineinfile:
+        path: /root/test
+        line: "{{ disk_sdb_node1 }}"
+      when: ansible_hostname == "rac-node01"
