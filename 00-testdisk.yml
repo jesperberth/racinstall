@@ -11,8 +11,10 @@
 
     - name: Get udev id
       command: '/usr/lib/udev/scsi_id -g -u -d /dev/sdb1'
-      register: disksdb
+      register: disksdbnode1
+      when: ansible_hostname == "rac-node01" 
 
     - name: Show id
       debug:
-        var: disksdb
+        var: disksdbnode1.stdout
+      when: ansible_hostname == "rac-node01"
