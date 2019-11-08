@@ -79,9 +79,11 @@
         name: "*"
         state: latest
 
-    - name: Install Glusterfs-server
+    - name: Install gluster software
       yum:
-        name: glusterfs-server
+        name: 
+          - glusterfs-server
+          - nfs-ganesha-gluster
         state: latest
 
     # Configure firewall
