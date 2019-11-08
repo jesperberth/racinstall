@@ -115,7 +115,6 @@
         state: present
         name: data
         bricks: /gluster/brick01/data
-        rebalance: yes
         replicas: 3
         cluster:
              - storage01.redhat.local
