@@ -61,13 +61,30 @@
         name: ol7_addons
         description: Oracle Linux 7 Add-ons
         baseurl: http://yum.oracle.com/repo/OracleLinux/OL7/addons/x86_64
+    
+    - name: Enable optional-latest repositories
+      yum_repository:
+        name: ol7_optional_latest
+        description: Oracle Linux 7 Add-ons
+        baseurl: http://yum.oracle.com/repo/OracleLinux/OL7/optional/latest/x86_64
 
     - name: Yum update
       yum:
         name: "*"
         state: latest
+
+    # Configure firewall
     
-   # - name: Install Prerequisits
-   #   yum:
-   #     name: 
-   #       - 
+    - name: set firewall rules Glusterfs
+      firewalld:
+        zone: public
+        service: glusterfs
+        permanent: true
+        state: enabled
+      notify: reload firewalld
+  
+  handlers:
+  - name: reload firewalld
+    systemd:
+      name: firewalld
+      state: reloaded
