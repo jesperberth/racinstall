@@ -1,6 +1,10 @@
 ---
 - hosts: storagenoder
- 
+  vars:
+    nfs_export: /data
+    gluster_volume_name: data
+    gluster_server: storage01.redhat.local
+
   tasks:
     # physical
     - name: create partion /dev/sdb
@@ -115,7 +119,7 @@
     - name: create gluster volume
       gluster_volume:
         state: present
-        name: data
+        name: "{{ gluster_volume_name }}"
         bricks: /gluster/brick01/data
         replicas: 3
         cluster:
@@ -124,7 +128,17 @@
              - storage03.redhat.local
       run_once: true
       when: ansible_hostname == "storage01" 
-    
+
+    - name: create directory for ganesha
+      file:
+       path: /etc/ganesha/exports
+       state: directory    
+
+    - name: create ganesha export conf
+      template:
+       src: templates/export.data.conf.j2
+       dest: /etc/ganesha/exports/export.data.conf
+
   handlers:
   - name: reload firewalld
     systemd:
