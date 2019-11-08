@@ -93,7 +93,17 @@
         name: glusterd
         state: started
         enabled: yes
-  
+    
+    # Configure Gluster
+
+    - name: Create a trusted storage pool
+      gluster_peer:
+        state: present
+        nodes:
+             - storage02.redhat.local
+             - storage03.redhat.local
+      when: ansible_hostname == "storage01" 
+
   handlers:
   - name: reload firewalld
     systemd:
