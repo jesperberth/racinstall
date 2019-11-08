@@ -50,6 +50,18 @@
 
     # Install Software
 
+    - name: Enable Gluster 4.1 repositories
+      yum_repository:
+        name: ol7_gluster41
+        description: Oracle Linux 7 Gluster 4.1
+        baseurl: http://yum.oracle.com/repo/OracleLinux/OL7/gluster41/x86_64
+
+    - name: Enable addons repositories
+      yum_repository:
+        name: ol7_addons
+        description: Oracle Linux 7 Add-ons
+        baseurl: http://yum.oracle.com/repo/OracleLinux/OL7/addons/x86_64
+
     - name: Yum update
       yum:
         name: "*"
