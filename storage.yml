@@ -145,6 +145,12 @@
        line: '%include "/etc/ganesha/exports/export.data.conf"'
        insertafter: EOF
 
+    - name: enable nfs-ganesha
+      systemd:
+        name: nfs-ganesha
+        state: started
+        enabled: yes
+
   handlers:
   - name: reload firewalld
     systemd:
