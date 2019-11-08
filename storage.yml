@@ -103,7 +103,21 @@
              - storage02.redhat.local
              - storage03.redhat.local
       when: ansible_hostname == "storage01" 
-
+    
+    - name: create gluster volume
+      gluster_volume:
+        state: present
+        name: data
+        bricks: /gluster/brick01
+        rebalance: yes
+        replicas: 3
+        cluster:
+             - storage01.redhat.local
+             - storage02.redhat.local
+             - storage03.redhat.local
+      run_once: true
+      when: ansible_hostname == "storage01" 
+    
   handlers:
   - name: reload firewalld
     systemd:
