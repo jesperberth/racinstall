@@ -87,6 +87,12 @@
         permanent: true
         state: enabled
       notify: reload firewalld
+
+    - name: enable glusterfs-server
+      systemd:
+        name: glusterfs-server
+        state: started
+        enabled: yes
   
   handlers:
   - name: reload firewalld
