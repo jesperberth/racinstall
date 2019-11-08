@@ -139,6 +139,12 @@
        src: templates/export.data.conf.j2
        dest: /etc/ganesha/exports/export.data.conf
 
+    - name: include export.data.conf in ganesha.conf
+      lineinfile:
+       path: /etc/ganesha/ganesha.conf
+       line: '%include "/etc/ganesha/exports/export.data.conf"'
+       insertafter: EOF
+
   handlers:
   - name: reload firewalld
     systemd:
