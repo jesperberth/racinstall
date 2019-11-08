@@ -1,0 +1,61 @@
+---
+- hosts: storagenoder
+ 
+  tasks:
+    # physical
+    - name: create partion /dev/sdb
+      parted:
+       device: /dev/sdb
+       number: 1
+       flags: [ lvm ]
+       state: present
+    
+    - name: create volume group vg.data
+      lvg:
+       vg: vg.data
+       pvs: /dev/sdb1
+    
+    # datadisk
+    
+    - name: create logical data disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.brick01
+       size: 30G
+    
+    - name: create filesystem xfs on lv.brick01
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.brick01
+    
+    - name: create directory for lv.brick01
+      file:
+       path: /gluster/brick01
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /gluster/brick01 
+       src: /dev/mapper/vg.data-lv.brick01
+       fstype: xfs 
+       opts: defaults
+       state: present
+        
+    # mount all
+    
+    - name: mount disk
+      shell: mount -a
+      args:
+       warn: false
+
+    # Install Software
+
+    - name: Yum update
+      yum:
+        name: "*"
+        state: latest
+    
+   # - name: Install Prerequisits
+   #   yum:
+   #     name: 
+   #       - 
