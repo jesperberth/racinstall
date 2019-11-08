@@ -90,7 +90,7 @@
 
     - name: enable glusterfs-server
       systemd:
-        name: glusterfs-server
+        name: glusterd
         state: started
         enabled: yes
   
