@@ -73,6 +73,11 @@
         name: "*"
         state: latest
 
+    - name: Install Glusterfs-server
+      yum:
+        name: glusterfs-server
+        state: latest
+
     # Configure firewall
     
     - name: set firewall rules Glusterfs
