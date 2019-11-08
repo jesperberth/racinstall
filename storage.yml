@@ -48,6 +48,12 @@
       args:
        warn: false
 
+    - name: create directory for gluster
+      file:
+       path: /gluster/brick01/data
+       state: directory
+
+
     # Install Software
 
     - name: Enable Gluster 4.1 repositories
@@ -108,7 +114,7 @@
       gluster_volume:
         state: present
         name: data
-        bricks: /gluster/brick01
+        bricks: /gluster/brick01/data
         rebalance: yes
         replicas: 3
         cluster:
