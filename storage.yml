@@ -208,6 +208,21 @@
         ssh_key_file: /etc/sysconfig/storhaug.d/secret
       when: ansible_hostname == "storage01" 
 
+    - name: Create CTDB conf
+      blockinfile:
+       path: /etc/ctdb/ctdb.conf
+       create: yes
+       block: |
+         CTDB_MANAGES_NFS=yes
+         CTDB_NODES=/etc/ctdb/nodes
+         CTDB_PUBLIC_ADDRESSES=/etc/ctdb/public_addresses
+         CTDB_NFS_CALLOUT=/etc/ctdb/nfs-ganesha-callout
+         CTDB_NFS_STATE_FS_TYPE=glusterfs
+         CTDB_NFS_STATE_MNT=/run/gluster/shared_storage
+         CTDB_NFS_SKIP_SHARE_CHECK=yes
+         NFS_HOSTNAME=localhost
+      when: ansible_hostname == "storage01" 
+
   handlers:
   - name: reload firewalld
     systemd:
