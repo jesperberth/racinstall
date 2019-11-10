@@ -83,6 +83,11 @@
         src: /root/install/software/storhaug-1.0-1.el7.noarch.rpm
         dest: /root/storhaug-1.0-1.el7.noarch.rpm
 
+    - name: Copy Storhaug-nfs
+      copy:
+        src: /root/install/software/storhaug-nfs-1.0-1.el7.noarch.rpm
+        dest: /root/storhaug-nfs-1.0-1.el7.noarch.rpm
+
     - name: Yum update
       yum:
         name: "*"
@@ -93,6 +98,7 @@
         name: 
           - glusterfs-server
           - nfs-ganesha-gluster
+          - ctdb
         state: latest
 
     # Configure firewall
