@@ -227,7 +227,7 @@
         name: root
         generate_ssh_key: yes
         ssh_key_bits: 2048
-        ssh_key_file: /etc/sysconfig/storhaug.d/secret
+        ssh_key_file: /etc/sysconfig/storhaug.d/secret.pem
       when: ansible_hostname == "storage01" 
 
     - name: Create CTDB conf
