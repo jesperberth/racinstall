@@ -99,6 +99,7 @@
           - glusterfs-server
           - nfs-ganesha-gluster
           - ctdb
+          - /root/storhaug-nfs-1.0-1.el7.noarch.rpm
         state: latest
 
     # Configure firewall
