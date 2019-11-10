@@ -63,9 +63,8 @@
     - name: Enable CentOS7.7 Storage repositories
       yum_repository:
         name: centos77storage
-        description: CentOS Linux 7 Storage
-        baseurl: http://mirror.iodc.dk/centos/7.7.1908/storage/x86_64/gluster-4.1/
-
+        state: absent
+        
     - name: Enable Gluster 4.1 repositories
       yum_repository:
         name: ol7_gluster41
