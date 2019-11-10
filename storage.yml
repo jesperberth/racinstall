@@ -195,9 +195,9 @@
        path: /etc/ctdb/nodes
        create: yes
        block: |
-         192.168.125.164
-         192.168.125.165
-         192.168.125.166
+         192.168.125.164/24 eth0
+         192.168.125.165/24 eth0
+         192.168.125.166/24 eth0
       when: ansible_hostname == "storage01" 
 
     - name: Create a 2048-bit SSH key for root in /etc/sysconfig/storhaug.d/secret.pem
@@ -210,7 +210,7 @@
 
     - name: Create CTDB conf
       blockinfile:
-       path: /etc/ctdb/ctdb.conf
+       path: /etc/ctdb/ctdbd.conf
        create: yes
        block: |
          CTDB_MANAGES_NFS=yes
