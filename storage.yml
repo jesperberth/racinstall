@@ -130,27 +130,56 @@
       run_once: true
       when: ansible_hostname == "storage01" 
 
-    - name: create directory for ganesha
-      file:
-       path: /etc/ganesha/exports
-       state: directory    
+# Configure NFS-Ganesha
 
-    - name: create ganesha export conf
-      template:
-       src: templates/export.data.conf.j2
-       dest: /etc/ganesha/exports/export.data.conf
+#    - name: create directory for ganesha
+#      file:
+#       path: /etc/ganesha/exports
+#      state: directory    
 
-    - name: include export.data.conf in ganesha.conf
-      lineinfile:
-       path: /etc/ganesha/ganesha.conf
-       line: '%include "/etc/ganesha/exports/export.data.conf"'
-       insertafter: EOF
+#    - name: create ganesha export conf
+#      template:
+#       src: templates/export.data.conf.j2
+#      dest: /etc/ganesha/exports/export.data.conf
 
-    - name: enable nfs-ganesha
-      systemd:
-        name: nfs-ganesha
-        state: stopped
-        enabled: no
+#    - name: include export.data.conf in ganesha.conf
+#      lineinfile:
+#       path: /etc/ganesha/ganesha.conf
+#       line: '%include "/etc/ganesha/exports/export.data.conf"'
+#      insertafter: EOF
+
+#    - name: enable nfs-ganesha
+#      systemd:
+#        name: nfs-ganesha
+#       state: stopped
+#       enabled: no
+
+# Configure Storhaug-nfs
+    - name: addnodes to /etc/ctdb/nodes
+      blockinfile:
+       path: /etc/ctdb/nodes
+       block: |
+         192.168.125.161
+         192.168.125.162
+         192.168.125.163
+      when: ansible_hostname == "storage01" 
+
+    - name: addnodes to /etc/ctdb/public_addresses
+      blockinfile:
+       path: /etc/ctdb/nodes
+       block: |
+         192.168.125.164
+         192.168.125.165
+         192.168.125.166
+      when: ansible_hostname == "storage01" 
+
+    - name: Create a 2048-bit SSH key for root in /etc/sysconfig/storhaug.d/secret.pem
+      user:
+        name: root
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: /etc/sysconfig/storhaug.d/secret
+      when: ansible_hostname == "storage01" 
 
   handlers:
   - name: reload firewalld
