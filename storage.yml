@@ -148,8 +148,8 @@
     - name: enable nfs-ganesha
       systemd:
         name: nfs-ganesha
-        state: started
-        enabled: yes
+        state: stopped
+        enabled: no
 
   handlers:
   - name: reload firewalld
