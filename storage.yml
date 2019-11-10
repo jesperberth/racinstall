@@ -110,12 +110,18 @@
 
     # Configure firewall
     
-    - name: set firewall rules Glusterfs and nfs
+    - name: set firewall rules Glusterfs
       firewalld:
         zone: public
-        service: 
-          - glusterfs
-          - nfs
+        service: glusterfs
+        permanent: true
+        state: enabled
+      notify: reload firewalld
+
+    - name: set firewall rules nfs
+      firewalld:
+        zone: public
+        service: nfs
         permanent: true
         state: enabled
       notify: reload firewalld
