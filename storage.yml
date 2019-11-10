@@ -180,25 +180,47 @@
 #       enabled: no
 
 # Configure Storhaug-nfs
-    - name: addnodes to /etc/ctdb/nodes
-      blockinfile:
+    - name: addnodes 1 to /etc/ctdb/nodes
+      lineinfile:
        path: /etc/ctdb/nodes
        create: yes
-       block: |
-         192.168.125.161
-         192.168.125.162
-         192.168.125.163
+       line: 192.168.125.161
       when: ansible_hostname == "storage01" 
 
-    - name: addnodes to /etc/ctdb/public_addresses
-      blockinfile:
+    - name: addnodes 2 to /etc/ctdb/nodes
+      lineinfile:
+       path: /etc/ctdb/nodes
+       create: yes
+       line: 192.168.125.162
+      when: ansible_hostname == "storage01" 
+
+    - name: addnodes 3 to /etc/ctdb/nodes
+      lineinfile:
+       path: /etc/ctdb/nodes
+       create: yes
+       line: 192.168.125.163
+      when: ansible_hostname == "storage01" 
+
+    - name: add public ip 1 to /etc/ctdb/public_addresses
+      lineinfile:
        path: /etc/ctdb/public_addresses
        create: yes
-       block: |
-         192.168.125.164/24 eth0
-         192.168.125.165/24 eth0
-         192.168.125.166/24 eth0
+       line: 192.168.125.164/24 eth0
       when: ansible_hostname == "storage01" 
+
+    - name: add public ip 2 to /etc/ctdb/public_addresses
+      lineinfile:
+       path: /etc/ctdb/public_addresses
+       create: yes
+       line: 192.168.125.165/24 eth0
+      when: ansible_hostname == "storage01" 
+
+    - name: add public ip 3 to /etc/ctdb/public_addresses
+      lineinfile:
+       path: /etc/ctdb/public_addresses
+       create: yes
+       line: 192.168.125.166/24 eth0
+      when: ansible_hostname == "storage01"       
 
     - name: Create a 2048-bit SSH key for root in /etc/sysconfig/storhaug.d/secret.pem
       user:
