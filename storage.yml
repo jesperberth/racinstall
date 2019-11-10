@@ -110,10 +110,12 @@
 
     # Configure firewall
     
-    - name: set firewall rules Glusterfs
+    - name: set firewall rules Glusterfs and nfs
       firewalld:
         zone: public
-        service: glusterfs
+        service: 
+          - glusterfs
+          - nfs
         permanent: true
         state: enabled
       notify: reload firewalld
@@ -175,6 +177,7 @@
     - name: addnodes to /etc/ctdb/nodes
       blockinfile:
        path: /etc/ctdb/nodes
+       create: yes
        block: |
          192.168.125.161
          192.168.125.162
@@ -184,6 +187,7 @@
     - name: addnodes to /etc/ctdb/public_addresses
       blockinfile:
        path: /etc/ctdb/nodes
+       create: yes
        block: |
          192.168.125.164
          192.168.125.165
