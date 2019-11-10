@@ -192,7 +192,7 @@
 
     - name: addnodes to /etc/ctdb/public_addresses
       blockinfile:
-       path: /etc/ctdb/nodes
+       path: /etc/ctdb/public_addresses
        create: yes
        block: |
          192.168.125.164/24 eth0
