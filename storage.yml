@@ -106,7 +106,7 @@
         name: 
           - /root/storhaug-1.0-1.el7.noarch.rpm
           - /root/storhaug-nfs-1.0-1.el7.noarch.rpm
-        state: latest
+        state: present
 
     # Configure firewall
     
