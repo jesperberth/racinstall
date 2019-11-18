@@ -3,7 +3,12 @@
   vars:
 
   tasks:
-    # physical
+    - name: yum update
+      yum:
+       name:  "*"
+       state: latest
+
+    # physical disk
     - name: create partion /dev/sdb
       parted:
        device: /dev/sdb
