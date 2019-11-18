@@ -89,7 +89,51 @@
       file:
        path: /u01/app/12.2.0.1/grid
        state: directory
-    
+
+    - name: creates directory for oracle oradata
+      file:
+       path: /u01/oradata
+       state: directory
+
+    - name: creates directory for oracle shared_config
+      file:
+       path: /u01/shared_config
+       state: directory
+
+    # fstab entry
+
+    - name: add fstab entry shared_config
+      mount: 
+       name: /u01/shared_config 
+       src: storagenfs.redhat.local:/nfsdisk/shared_config
+       fstype: nfs
+       opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
+       state: present
+
+    - name: add fstab entry shared_grid
+      mount: 
+       name: /u01/app/12.1.0.2/grid
+       src: storagenfs.redhat.local:/nfsdisk/shared_grid
+       fstype: nfs
+       opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
+       state: present
+
+    - name: add fstab entry shared_home
+      mount: 
+       name: /u01/app/oracle/product/12.2.0.1/db_1
+       src: storagenfs.redhat.local:/nfsdisk/shared_home
+       fstype: nfs
+       opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
+       state: present
+
+    - name: add fstab entry shared_data
+      mount: 
+       name: /u01/oradata
+       src: storagenfs.redhat.local:/nfsdisk/shared_data
+       fstype: nfs
+       opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
+       state: present
+
     - name: set owner on directory for oracle install
       file:
        path: /u01
