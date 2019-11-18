@@ -48,3 +48,29 @@
       shell: mount -a
       args:
        warn: false
+
+    # Configure NFS Storage
+    - name: Install NFS
+      yum:
+        name: nfs-utils
+        state: latest
+
+    - name: Enable NFS Service
+      systemd:
+        name: nfs-server
+        enabled: yes
+        state: started
+
+    - name: set firewall rules nfs
+      firewalld:
+        zone: public
+        service: nfs
+        permanent: true
+        state: enabled
+      notify: reload firewall
+
+  handlers:
+    - name: reload firewall
+      systemd: 
+        name: firewalld
+        state: restarted
