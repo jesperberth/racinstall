@@ -9,6 +9,8 @@
     ora_sid_node1: testsid1
     ora_sid_node2: testsid2
     ora_password: Cflex123
+    rac_server1: rac-node01
+    rac_server2: rac-node02
       
   tasks:
     - name: yum update
@@ -36,23 +38,23 @@
 
     # Configure network
 
-    - name: Set Ip address on nic2 on dbrac1
+    - name: Set Ip address on nic2 on rac node 1
       nmcli:
         conn_name: rac-eth1
         ifname: eth1
         type: ethernet
         ip4: 192.168.50.1/24
         state: present
-      when: ansible_hostname == "dbrac1" 
+      when: ansible_hostname == "{{ rac_server1 }}" 
 
-    - name: Set Ip address on nic2 on dbrac2
+    - name: Set Ip address on nic2 on rac node 2
       nmcli:
         conn_name: rac-eth1
         ifname: eth1
         type: ethernet
         ip4: 192.168.50.2/24
         state: present
-      when: ansible_hostname == "dbrac2" 
+      when: ansible_hostname == "{{ rac_server1 }}" 
 
     # Configure firewall
     
@@ -110,17 +112,13 @@
       template:
        src: templates/setEnv_node1.j2
        dest: /home/oracle/scripts/setEnv.sh
-      when: ansible_hostname == "dbrac1" 
+      when: ansible_hostname == "{{ rac_server1 }}" 
 
     - name: create setENV.sh file in oracle users scripts
       template:
        src: templates/setEnv_node2.j2
        dest: /home/oracle/scripts/setEnv.sh
-      when: ansible_hostname == "dbrac2" 
-    
-#    - name: add setEnv.sh to oracle users bash_profile
-#      shell: |
-#       echo '. /home/oracle/scripts/setEnv.sh' >> /home/oracle/.bash_profile
+      when: ansible_hostname == "{{ rac_server2 }}" 
     
     - name: add setEnv.sh to oracle users bash_profile
       lineinfile:
@@ -137,11 +135,6 @@
        src: templates/stop_all.j2
        dest: /home/oracle/scripts/stop_all.sh
     
-#    - name: copy createdb file
-#      template:
-#       src: templates/ora_createdb.j2
-#       dest: /home/oracle/scripts/ora_createdb.sh 
-
     - name: copy grid_env file
       template:
        src: templates/grid_env.j2
@@ -185,13 +178,13 @@
       copy:
         src:  /root/install/software/linuxx64_12201_grid_home.zip
         dest:  /root/install/software/linuxx64_12201_grid_home.zip
-      when: ansible_hostname == "dbrac1" 
+      when: ansible_hostname == "{{ rac_server1 }}" 
 
     - name: extract oracle grid installer
       unarchive:
        src: /root/install/software/linuxx64_12201_grid_home.zip
        dest: /u01/app/12.2.0.1/grid
-      when: ansible_hostname == "dbrac1" 
+      when: ansible_hostname == "{{ rac_server1 }}" 
 
     - name: set owner on directory for oracle install
       file:
@@ -200,7 +193,7 @@
        group: oinstall
        mode: 0755
        recurse: yes
-      when: ansible_hostname == "dbrac1"
+      when: ansible_hostname == "{{ rac_server1 }}"
     
 #    - name: create oracle response file
 #      template:

@@ -2,6 +2,13 @@
 - hosts: oraclerac
  
   tasks:
+   # Configure Udev
+    - name: Configure SCSI as trusted device
+      lineinfile:
+       path: /etc/scsi_id.config
+       line: 'options=-g'
+       create: yes
+
     # physical
     - name: create partion /dev/sdb
       parted:
@@ -10,6 +17,34 @@
        flags: [ lvm ]
        state: present
     
+    - name: create partion /dev/sdc
+      parted:
+       device: /dev/sdc
+       number: 1
+       state: present
+      when: ansible_hostname == "dbrac1"
+
+    - name: create partion /dev/sdd
+      parted:
+       device: /dev/sdd
+       number: 1
+       state: present
+      when: ansible_hostname == "dbrac1"
+
+    - name: create partion /dev/sde
+      parted:
+       device: /dev/sde
+       number: 1
+       state: present
+      when: ansible_hostname == "dbrac1"
+
+    - name: create partion /dev/sdf
+      parted:
+       device: /dev/sdf
+       number: 1
+       state: present
+      when: ansible_hostname == "dbrac1"
+
     - name: create volume group vg.data
       lvg:
        vg: vg.data
