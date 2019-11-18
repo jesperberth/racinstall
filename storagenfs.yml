@@ -152,8 +152,21 @@
         state: enabled
       notify: reload firewall
 
+    - name: Create NFS export
+      blockinfile:
+        path: /etc/exports
+        block: |
+          /nfsdisk/shared_config               *(rw,sync,no_wdelay,insecure_locks,no_root_squash)
+          /nfsdisk/shared_grid                 *(rw,sync,no_wdelay,insecure_locks,no_root_squash)
+          /nfsdisk/shared_home                 *(rw,sync,no_wdelay,insecure_locks,no_root_squash)
+          /nfsdisk/shared_data                 *(rw,sync,no_wdelay,insecure_locks,no_root_squash)
+      notify: reload nfs
+          
   handlers:
     - name: reload firewall
       systemd: 
         name: firewalld
         state: restarted
+
+    - name: reload nfs
+      shell: exportfs -ra
