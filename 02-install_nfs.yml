@@ -45,7 +45,7 @@
         type: ethernet
         ip4: 192.168.50.1/24
         state: present
-      when: ansible_hostname == "{{ rac_server1 }}" 
+      when: ansible_hostname == rac_server1 
 
     - name: Set Ip address on nic2 on rac node 2
       nmcli:
@@ -54,7 +54,7 @@
         type: ethernet
         ip4: 192.168.50.2/24
         state: present
-      when: ansible_hostname == "{{ rac_server1 }}" 
+      when: ansible_hostname == rac_server1 
 
     # Configure firewall
     
@@ -156,13 +156,13 @@
       template:
        src: templates/setEnv_node1.j2
        dest: /home/oracle/scripts/setEnv.sh
-      when: ansible_hostname == "{{ rac_server1 }}" 
+      when: ansible_hostname == rac_server1 
 
     - name: create setENV.sh file in oracle users scripts
       template:
        src: templates/setEnv_node2.j2
        dest: /home/oracle/scripts/setEnv.sh
-      when: ansible_hostname == "{{ rac_server2 }}" 
+      when: ansible_hostname == rac_server2 
     
     - name: add setEnv.sh to oracle users bash_profile
       lineinfile:
@@ -222,13 +222,13 @@
       copy:
         src:  /root/install/software/linuxx64_12201_grid_home.zip
         dest:  /root/install/software/linuxx64_12201_grid_home.zip
-      when: ansible_hostname == "{{ rac_server1 }}" 
+      when: ansible_hostname == rac_server1 
 
     - name: extract oracle grid installer
       unarchive:
        src: /root/install/software/linuxx64_12201_grid_home.zip
        dest: /u01/app/12.2.0.1/grid
-      when: ansible_hostname == "{{ rac_server1 }}" 
+      when: ansible_hostname == rac_server1 
 
     - name: set owner on directory for oracle install
       file:
@@ -237,7 +237,7 @@
        group: oinstall
        mode: 0755
        recurse: yes
-      when: ansible_hostname == "{{ rac_server1 }}"
+      when: ansible_hostname == rac_server1
     
 #    - name: create oracle response file
 #      template:
