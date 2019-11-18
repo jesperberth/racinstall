@@ -21,32 +21,110 @@
        vg: vg.data
        pvs: /dev/sdb1
     
-    # datadisk
+    # shared_config
     
     - name: create logical data disk on vg.data
       lvol:
        vg: vg.data
-       lv: lv.disk1
-       size: 30G
+       lv: lv.shared_config
+       size: 20G
     
-    - name: create filesystem xfs on lv.disk1
+    - name: create filesystem xfs on lv.shared_config
       filesystem:
        fstype: xfs
-       dev: /dev/mapper/vg.data-lv.disk1
+       dev: /dev/mapper/vg.data-lv.shared_config
     
-    - name: create directory for lv.disk1
+    - name: create directory for lv.shared_config
       file:
-       path: /nfsdisk/disk1
+       path: /nfsdisk/shared_config
        state: directory
     
     - name: add fstab entry
       mount: 
-       name: /nfsdisk/disk1 
-       src: /dev/mapper/vg.data-lv.disk1
+       name: /nfsdisk/shared_config 
+       src: /dev/mapper/vg.data-lv.shared_config
        fstype: xfs 
        opts: defaults
        state: present
-        
+
+    # shared_grid
+
+    - name: create logical data disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.shared_grid
+       size: 20G
+    
+    - name: create filesystem xfs on lv.shared_grid
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.shared_grid
+    
+    - name: create directory for lv.shared_grid
+      file:
+       path: /nfsdisk/shared_grid
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /nfsdisk/shared_grid 
+       src: /dev/mapper/vg.data-lv.shared_grid
+       fstype: xfs 
+       opts: defaults
+       state: present
+
+    # shared_home
+
+    - name: create logical data disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.shared_home
+       size: 20G
+    
+    - name: create filesystem xfs on lv.shared_home
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.shared_home
+    
+    - name: create directory for lv.shared_home
+      file:
+       path: /nfsdisk/shared_home
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /nfsdisk/shared_home 
+       src: /dev/mapper/vg.data-lv.shared_home
+       fstype: xfs 
+       opts: defaults
+       state: present
+
+    # shared_data
+
+    - name: create logical data disk on vg.data
+      lvol:
+       vg: vg.data
+       lv: lv.shared_data
+       size: 20G
+    
+    - name: create filesystem xfs on lv.shared_data
+      filesystem:
+       fstype: xfs
+       dev: /dev/mapper/vg.data-lv.shared_data
+    
+    - name: create directory for lv.shared_data
+      file:
+       path: /nfsdisk/shared_data
+       state: directory
+    
+    - name: add fstab entry
+      mount: 
+       name: /nfsdisk/shared_data 
+       src: /dev/mapper/vg.data-lv.shared_data
+       fstype: xfs 
+       opts: defaults
+       state: present
+
     # mount all
     
     - name: mount disk
