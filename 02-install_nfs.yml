@@ -45,7 +45,7 @@
     - name: Set Nproc
       lineinfile:
         path: /etc/security/limits.d/20-nproc.conf
-        regexp: '^*          soft    nproc    4096'
+        regexp: '[*]\s*\b(soft)\b\s*\b(nproc)\b\s*\b(4096)\b'
         line: '* - nproc 16384'
     
 
