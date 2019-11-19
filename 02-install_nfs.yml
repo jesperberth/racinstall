@@ -259,6 +259,10 @@
        mode: 0755
        recurse: yes
     
+    - name: restart rac nodes
+      reboot:
+        reboot_timeout: 360
+
 #    - name: create oracle response file
 #      template:
 #       src: templates/oradb12.j2
