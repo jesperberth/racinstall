@@ -154,16 +154,6 @@
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
 
-    # Configure owner and rights
-
-#    - name: set owner on directory for oracle install
-#      file:
-#       path: /u01
-#       owner: oracle
-#       group: oinstall
-#       mode: 0755
-#       recurse: yes
-
     # Create Oracle Users home dir
     
     - name: creates directory for oracle users scripts
@@ -208,10 +198,17 @@
        src: templates/grid_env.j2
        dest: /home/oracle/grid_env
 
-#    - name: copy db_env file
-#      template:
-#       src: templates/db_env.j2
-#       dest: /home/oracle/db_env
+    - name: copy db_env file node1
+      template:
+       src: templates/db_env_node1.j2
+       dest: /home/oracle/db_env
+      when: ansible_hostname == rac_server1 
+
+    - name: copy db_env file node2
+      template:
+       src: templates/db_env_node2.j2
+       dest: /home/oracle/db_env
+      when: ansible_hostname == rac_server2 
 
     - name: set owner on directory for oracle user
       file:
@@ -226,6 +223,8 @@
       args:
        warn: false
     
+    # Copy and Extract Oracle Grid and DB 
+
     - name: copy Oracle DB Install
       copy:
         src:  /root/install/software/linuxx64_12201_database.zip
@@ -247,6 +246,8 @@
        src: /root/install/software/linuxx64_12201_grid_home.zip
        dest: /u01/app/12.2.0.1/grid
       when: ansible_hostname == rac_server1 
+
+    # Set Oracle as Owner on /u01
 
     - name: set owner on directory for oracle install
       file:
