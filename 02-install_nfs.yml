@@ -231,10 +231,16 @@
         dest:  /root/install/software/linuxx64_12201_database.zip
         force: no
 
+    - name: Check if Oracle DB Install is extracted
+      stat:
+        path: /home/oracle/database/runInstaller
+      register: dbinst_result
+  
     - name: extract oracle db installer
       unarchive:
        src: /root/install/software/linuxx64_12201_database.zip
        dest: /home/oracle/
+      when: dbinst_result.stat.exists == False
 
     - name: copy Oracle Grid Install
       copy:
@@ -243,11 +249,19 @@
         force: no
       when: ansible_hostname == rac_server1 
 
+    - name: Check if Oracle Grid Install is extracted
+      stat:
+        path: /u01/app/12.2.0.1/grid
+      register: gridinst_result
+      when: ansible_hostname == rac_server1
+
     - name: extract oracle grid installer
       unarchive:
        src: /root/install/software/linuxx64_12201_grid_home.zip
        dest: /u01/app/12.2.0.1/grid
-      when: ansible_hostname == rac_server1 
+      when: 
+        - ansible_hostname == rac_server1 
+        - gridinst_result.stat.exists == False
 
     # Set Oracle as Owner on /u01
 
