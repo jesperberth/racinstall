@@ -4,7 +4,7 @@
   vars:
     # created with:
     # python -c 'import crypt; print crypt.crypt("password_goes_here", "$1$SomeSalt$")'
-    user_password: $1$SomeSalt$I7oNWJ.MZAgIP4Aqj3RfO1
+    user_password: $1$SomeSalt$O6mASBY4g2tQah/L1V9aH/
     ora_dbname: testdatabase
     ora_sid_node1: testsid1
     ora_sid_node2: testsid2
@@ -67,7 +67,7 @@
         type: ethernet
         ip4: 192.168.50.2/24
         state: present
-      when: ansible_hostname == rac_server1 
+      when: ansible_hostname == rac_server2
 
     - name: add host to /etc/hosts
       lineinfile:
@@ -154,6 +154,11 @@
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
 
+    - name: mount disks
+      shell: mount -a
+      args:
+       warn: false
+
     # Create Oracle Users home dir
     
     - name: creates directory for oracle users scripts
@@ -222,7 +227,21 @@
        chmod u+x /home/oracle/scripts/*.sh
       args:
        warn: false
-    
+
+    # Set Oracle as Owner on /u01
+    - stat:
+        path: /u01/app/12.2.0.1/grid/gridSetup.sh
+      register: gridown
+
+    - name: set owner on directory for oracle install
+      file:
+        path: /u01
+        owner: oracle
+        group: oinstall
+        mode: 0755
+        recurse: yes
+      when: gridown.stat.pw_name != 'oracle'
+
     # Copy and Extract Oracle Grid and DB 
 
     - name: copy Oracle DB Install
@@ -240,6 +259,8 @@
       unarchive:
        src: /root/install/software/linuxx64_12201_database.zip
        dest: /home/oracle/
+       owner: oracle
+       group: oinstall
       when: dbinst_result.stat.exists == False
 
     - name: copy Oracle Grid Install
@@ -251,7 +272,7 @@
 
     - name: Check if Oracle Grid Install is extracted
       stat:
-        path: /u01/app/12.2.0.1/grid
+        path: /u01/app/12.2.0.1/grid/gridSetup.sh
       register: gridinst_result
       when: ansible_hostname == rac_server1
 
@@ -259,19 +280,12 @@
       unarchive:
        src: /root/install/software/linuxx64_12201_grid_home.zip
        dest: /u01/app/12.2.0.1/grid
-      when: 
-        - ansible_hostname == rac_server1 
-        - gridinst_result.stat.exists == False
-
-    # Set Oracle as Owner on /u01
-
-    - name: set owner on directory for oracle install
-      file:
-       path: /u01
        owner: oracle
        group: oinstall
        mode: 0755
-       recurse: yes
+      when: 
+        - ansible_hostname == rac_server1 
+        - gridinst_result.stat.exists == False
     
     - name: restart rac nodes
       reboot:
@@ -352,4 +366,3 @@
 #      shell: |
 #       echo /usr/lib/oracle/11.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient11.2.conf
 #       ldconfig
-    
