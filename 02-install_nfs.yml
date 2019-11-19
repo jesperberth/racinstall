@@ -13,6 +13,8 @@
     rac_server2: rac-node02
       
   tasks:
+    # Install Software
+
     - name: yum update
       yum:
        name:  "*"
@@ -27,6 +29,8 @@
       yum:
        name:  NetworkManager-glib
        state: latest
+    
+    # Set Security
 
     - name: change SELINUX
       selinux:
@@ -35,6 +39,15 @@
     
     - name: set oracle user password
       user: name=oracle password={{ user_password }}
+
+    # Set Environment Parameters
+
+    - name: Set Nproc
+      lineinfile:
+        path: /etc/security/limits.d/20-nproc.conf
+        regexp: '^*          soft    nproc    4096'
+        line: '* - nproc 16384'
+    
 
     # Configure network
 
@@ -56,6 +69,12 @@
         state: present
       when: ansible_hostname == rac_server1 
 
+    - name: add host to /etc/hosts
+      lineinfile:
+       path: /etc/hosts
+       line: '{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}'
+       create: yes
+    
     # Configure firewall
     
     - name: set firewall rules Oracle DB
@@ -79,7 +98,8 @@
        permanent: true
        state: enabled
 
-     # Configure Oracle Prereqs
+     # Configure Oracle Prereq directories
+
     - name: creates directory for oracle install
       file:
        path: /u01/app/oracle/product/12.2.0.1/db_1
@@ -134,13 +154,17 @@
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
 
-    - name: set owner on directory for oracle install
-      file:
-       path: /u01
-       owner: oracle
-       group: oinstall
-       mode: 0755
-       recurse: yes
+    # Configure owner and rights
+
+#    - name: set owner on directory for oracle install
+#      file:
+#       path: /u01
+#       owner: oracle
+#       group: oinstall
+#       mode: 0755
+#       recurse: yes
+
+    # Create Oracle Users home dir
     
     - name: creates directory for oracle users scripts
       file:
@@ -202,12 +226,6 @@
       args:
        warn: false
     
-    - name: add host to /etc/hosts
-      lineinfile:
-       path: /etc/hosts
-       line: '{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}'
-       create: yes
-    
     - name: copy Oracle DB Install
       copy:
         src:  /root/install/software/linuxx64_12201_database.zip
@@ -237,7 +255,6 @@
        group: oinstall
        mode: 0755
        recurse: yes
-      when: ansible_hostname == rac_server1
     
 #    - name: create oracle response file
 #      template:
