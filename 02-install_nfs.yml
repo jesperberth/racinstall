@@ -308,9 +308,9 @@
         - ansible_hostname == rac_server1 
         - gridinst_result.stat.exists == False
     
-    - name: restart rac nodes
-      reboot:
-        reboot_timeout: 360
+#    - name: restart rac nodes
+#      reboot:
+#        reboot_timeout: 360
 
 #    - name: create oracle response file
 #      template:
