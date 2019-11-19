@@ -229,6 +229,7 @@
       copy:
         src:  /root/install/software/linuxx64_12201_database.zip
         dest:  /root/install/software/linuxx64_12201_database.zip
+        force: no
 
     - name: extract oracle db installer
       unarchive:
@@ -239,6 +240,7 @@
       copy:
         src:  /root/install/software/linuxx64_12201_grid_home.zip
         dest:  /root/install/software/linuxx64_12201_grid_home.zip
+        force: no
       when: ansible_hostname == rac_server1 
 
     - name: extract oracle grid installer
