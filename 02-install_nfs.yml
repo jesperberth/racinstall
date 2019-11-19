@@ -229,14 +229,9 @@
        group: oinstall
        recurse: yes
     
-#    - name: set +x on all .sh files in oracle users scripts
-#      shell: |
-#       chmod u+x /home/oracle/scripts/*.sh
-#      args:
-#       warn: false
-
     # Set Oracle as Owner on /u01
-    - stat:
+    - name: Get stat on gridSetup.sh  
+      stat:
         path: /u01/app/12.2.0.1/grid/gridSetup.sh
       register: gridown
 

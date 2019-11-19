@@ -125,7 +125,7 @@
     - name: add setEnv.sh to oracle users bash_profile
       lineinfile:
        path: /home/oracle/.bash_profile
-       line: '/home/oracle/scripts/setEnv.sh'
+       line: '. /home/oracle/scripts/setEnv.sh'
 
     - name: create start_all.sh file in oracle users scripts
       template:
