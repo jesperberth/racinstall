@@ -29,7 +29,12 @@
       yum:
        name:  NetworkManager-glib
        state: latest
-    
+
+    - name: ensure net-tools is installed
+      yum:
+       name:  net-tools
+       state: latest
+
     # Set Security
 
     - name: change SELINUX
@@ -74,29 +79,43 @@
        path: /etc/hosts
        line: '{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}'
        create: yes
-    
+   
+    # Configure services
+
+    - name: Disable Firewalld
+      systemd:
+        name: firewalld
+        enabled: no
+        state: stopped
+
+    - name: Disable avahi-daemon
+      systemd:
+        name: avahi-daemon
+        enabled: no
+        state: stopped
+
     # Configure firewall
     
-    - name: set firewall rules Oracle DB
-      firewalld:
-       zone: public
-       port: 1521/tcp
-       permanent: true
-       state: enabled
-    
-    - name: set firewall rules 5222
-      firewalld:
-       zone: public
-       port: 5222/tcp
-       permanent: true
-       state: enabled
-    
-    - name: set firewall rules 5269
-      firewalld:
-       zone: public
-       port: 5269/tcp
-       permanent: true
-       state: enabled
+#    - name: set firewall rules Oracle DB
+#      firewalld:
+#       zone: public
+#       port: 1521/tcp
+#       permanent: true
+#       state: enabled
+#    
+#   - name: set firewall rules 5222
+#      firewalld:
+#       zone: public
+#       port: 5222/tcp
+#       permanent: true
+#       state: enabled
+#    
+#    - name: set firewall rules 5269
+#      firewalld:
+#       zone: public
+#       port: 5269/tcp
+#       permanent: true
+#       state: enabled
 
      # Configure Oracle Prereq directories
 

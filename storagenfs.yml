@@ -27,7 +27,7 @@
       lvol:
        vg: vg.data
        lv: lv.shared_config
-       size: 20G
+       size: 50G
     
     - name: create filesystem xfs on lv.shared_config
       filesystem:
