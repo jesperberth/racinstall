@@ -175,47 +175,51 @@
       template:
        src: templates/setEnv_node1.j2
        dest: /home/oracle/scripts/setEnv.sh
+       mode: 0744
       when: ansible_hostname == rac_server1 
 
     - name: create setENV.sh file in oracle users scripts
       template:
        src: templates/setEnv_node2.j2
        dest: /home/oracle/scripts/setEnv.sh
+       mode: 0744
       when: ansible_hostname == rac_server2 
     
     - name: add setEnv.sh to oracle users bash_profile
       lineinfile:
        path: /home/oracle/.bash_profile
-       line: '/home/oracle/scripts/setEnv.sh'
+       line: '. /home/oracle/scripts/setEnv.sh'
 
     - name: create start_all.sh file in oracle users scripts
       template:
        src: templates/start_all.j2
        dest: /home/oracle/scripts/start_all.sh
+       mode: 0744
     
     - name: create stop_all.sh file in oracle users scripts
       template:
        src: templates/stop_all.j2
        dest: /home/oracle/scripts/stop_all.sh
+       mode: 0744
     
     - name: copy grid_env file
       template:
        src: templates/grid_env.j2
        dest: /home/oracle/grid_env
-       mode: 0700
+       mode: 0744
 
     - name: copy db_env file node1
       template:
        src: templates/db_env_node1.j2
        dest: /home/oracle/db_env
-       mode: 0700
+       mode: 0744
       when: ansible_hostname == rac_server1 
 
     - name: copy db_env file node2
       template:
        src: templates/db_env_node2.j2
        dest: /home/oracle/db_env
-       mode: 0700
+       mode: 0744
       when: ansible_hostname == rac_server2 
 
     - name: set owner on directory for oracle user
@@ -225,11 +229,11 @@
        group: oinstall
        recurse: yes
     
-    - name: set +x on all .sh files in oracle users scripts
-      shell: |
-       chmod u+x /home/oracle/scripts/*.sh
-      args:
-       warn: false
+#    - name: set +x on all .sh files in oracle users scripts
+#      shell: |
+#       chmod u+x /home/oracle/scripts/*.sh
+#      args:
+#       warn: false
 
     # Set Oracle as Owner on /u01
     - stat:
