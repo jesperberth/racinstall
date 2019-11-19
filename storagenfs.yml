@@ -163,7 +163,7 @@
     - name: set firewall rules rpc-bind
       firewalld:
         zone: public
-        service: rpc-binf
+        service: rpc-bind
         permanent: true
         state: enabled
       notify: reload firewall
