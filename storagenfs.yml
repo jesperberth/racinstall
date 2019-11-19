@@ -152,6 +152,22 @@
         state: enabled
       notify: reload firewall
 
+    - name: set firewall rules mountd
+      firewalld:
+        zone: public
+        service: mountd
+        permanent: true
+        state: enabled
+      notify: reload firewall
+
+    - name: set firewall rules rpc-bind
+      firewalld:
+        zone: public
+        service: rpc-binf
+        permanent: true
+        state: enabled
+      notify: reload firewall
+
     - name: Create NFS export
       blockinfile:
         path: /etc/exports
