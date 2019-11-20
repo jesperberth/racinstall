@@ -4,14 +4,15 @@
   vars:
     # created with:
     # python -c 'import crypt; print crypt.crypt("password_goes_here", "$1$SomeSalt$")'
-    user_password: $1$SomeSalt$O6mASBY4g2tQah/L1V9aH/
+    user_password: $1$SomeSalt$I7oNWJ.MZAgIP4Aqj3RfO1
     ora_dbname: testdatabase
     ora_sid_node1: testsid1
     ora_sid_node2: testsid2
     ora_password: Cflex123
-    rac_server1: rac-node01
-    rac_server2: rac-node02
-      
+    rac_server1: dbrac1
+    rac_server2: dbrac2
+    nfsserver: dbstorage.vmcflex.local
+ 
   tasks:
     # Install Software
 
@@ -34,6 +35,17 @@
       yum:
        name:  net-tools
        state: latest
+
+    - name: copy cvuqdisk.rpm
+      copy:
+        src:  /root/install/software/cvuqdisk-1.0.10-1.rpm
+        dest:  /root/install/software/cvuqdisk-1.0.10-1.rpm
+        force: no
+
+    - name: Install cvuqdisk-1.0.10-1.rpm
+      yum:
+        name: /root/install/software/cvuqdisk-1.0.10-1.rpm
+        state: present
 
     # Set Security
 
@@ -88,11 +100,11 @@
         enabled: no
         state: stopped
 
-    - name: Disable avahi-daemon
-      systemd:
-        name: avahi-daemon
-        enabled: no
-        state: stopped
+#    - name: Disable avahi-daemon
+#      systemd:
+#        name: avahi-daemon
+#        enabled: no
+#        state: stopped
 
     # Configure firewall
     
@@ -144,7 +156,7 @@
     - name: add fstab entry shared_config
       mount: 
        name: /u01/shared_config 
-       src: storagenfs.redhat.local:/nfsdisk/shared_config
+       src: "{{ nfsserver }}:/nfsdisk/shared_config"
        fstype: nfs
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
@@ -152,7 +164,7 @@
     - name: add fstab entry shared_grid
       mount: 
        name: /u01/app/12.2.0.1/grid
-       src: storagenfs.redhat.local:/nfsdisk/shared_grid
+       src: "{{ nfsserver }}:/nfsdisk/shared_grid"
        fstype: nfs
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
@@ -160,7 +172,7 @@
     - name: add fstab entry shared_home
       mount: 
        name: /u01/app/oracle/product/12.2.0.1/db_1
-       src: storagenfs.redhat.local:/nfsdisk/shared_home
+       src: "{{ nfsserver }}:/nfsdisk/shared_home"
        fstype: nfs
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
@@ -168,7 +180,7 @@
     - name: add fstab entry shared_data
       mount: 
        name: /u01/oradata
-       src: storagenfs.redhat.local:/nfsdisk/shared_data
+       src: "{{ nfsserver }}:/nfsdisk/shared_data"
        fstype: nfs
        opts: rw,bg,hard,nointr,tcp,vers=3,timeo=600,rsize=32768,wsize=32768,actimeo=0
        state: present
@@ -249,9 +261,10 @@
        recurse: yes
     
     # Set Oracle as Owner on /u01
-    - name: Get stat on gridSetup.sh  
+
+    - name: Get stat on /u01  
       stat:
-        path: /u01/app/12.2.0.1/grid/gridSetup.sh
+        path: /u01
       register: gridown
 
     - name: set owner on directory for oracle install
@@ -261,7 +274,7 @@
         group: oinstall
         mode: 0755
         recurse: yes
-      when: gridown.stat.pw_name != 'oracle'
+      when: gridown.stat.pw_name == 'root'
 
     # Copy and Extract Oracle Grid and DB 
 
