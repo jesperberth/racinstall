@@ -99,7 +99,7 @@ oracle.install.asm.OSDBA=dba
 # The value to be specified for OSOPER group is optional.
 # Value should not be provided if configuring Client Cluster - i.e. storageOption=CLIENT_ASM_STORAGE.
 #-------------------------------------------------------------------------------
-oracle.install.asm.OSOPER=
+oracle.install.asm.OSOPER=dba
 
 #-------------------------------------------------------------------------------
 # The OSASM_GROUP is the OS group which is to be granted SYSASM privileges. This
@@ -159,7 +159,7 @@ oracle.install.crs.config.memberClusterManifestFile=
 #
 # Applicable only for STANDALONE and DOMAIN cluster configuration
 #-------------------------------------------------------------------------------
-oracle.install.crs.config.clusterName=dbrac-cluster
+oracle.install.crs.config.clusterName={{ rac-clustername }}
 
 #-------------------------------------------------------------------------------
 # Applicable only for STANDALONE, DOMAIN, MEMBERDB cluster configuration.
@@ -235,7 +235,7 @@ oracle.install.crs.config.sites=
 # hostnameprefix:lowerbound-upperbound:hostnamesuffix:vipsuffix:role of node
 #
 #-------------------------------------------------------------------------------
-oracle.install.crs.config.clusterNodes=dbrac1.vmcflex.local:dbrac1-vip.vmcflex.local:HUB,dbrac2.vmcflex.local:dbrac2-vip.vmcflex.local:HUB
+ oracle.install.crs.config.clusterNodes={{ rac-node1fqdn }}:{{ rac-node1vip }}:HUB,{{ rac-node2fqdn }}:{{ rac-node2vip }}:HUB
 
 #-------------------------------------------------------------------------------
 # The value should be a comma separated strings where each string is as shown below
@@ -251,7 +251,7 @@ oracle.install.crs.config.clusterNodes=dbrac1.vmcflex.local:dbrac1-vip.vmcflex.l
 # For example: eth0:140.87.24.0:1,eth1:10.2.1.0:2,eth2:140.87.52.0:3
 #
 #-------------------------------------------------------------------------------
-oracle.install.crs.config.networkInterfaceList=eth0:192.168.210.0:1,eth1:192.168.50.0:5
+oracle.install.crs.config.networkInterfaceList=eth0:192.168.210.0:1,eth1:192.168.50.0:5,virbr0:192.168.122.0:3
 
 #------------------------------------------------------------------------------
 # Create a separate ASM DiskGroup to store GIMR data.
@@ -308,7 +308,7 @@ oracle.install.crs.config.ipmi.bmcPassword=
 # ASM_ON_NAS applicable only if
 # oracle.install.crs.config.ClusterConfiguration=STANDALONE
 #-------------------------------------------------------------------------------
-oracle.install.asm.storageOption=ASM
+oracle.install.asm.storageOption=ASM_ON_NAS
 
 #-------------------------------------------------------------------------------
 # NAS location to create ASM disk group for storing OCR/VDSK 
@@ -316,7 +316,7 @@ oracle.install.asm.storageOption=ASM
 # to be used to store OCR/VDSK files
 # Applicable only if oracle.install.asm.storageOption=ASM_ON_NAS
 #-------------------------------------------------------------------------------
-oracle.install.asmOnNAS.ocrLocation=
+oracle.install.asmOnNAS.ocrLocation=/u01/shared_config/ocr_configuration
 #------------------------------------------------------------------------------
 # Create a separate ASM DiskGroup on NAS to store GIMR data
 # Specify 'true' if you would like to separate GIMR data with clusterware data, else
@@ -345,7 +345,7 @@ oracle.install.asm.SYSASMPassword=
 # Example: oracle.install.asm.diskGroup.name=data
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.name=DATA
+oracle.install.asm.diskGroup.name=
 
 #-------------------------------------------------------------------------------
 # Redundancy level to be used by ASM.
@@ -357,7 +357,7 @@ oracle.install.asm.diskGroup.name=DATA
 # Example: oracle.install.asm.diskGroup.redundancy=NORMAL
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.redundancy=EXTERNAL
+oracle.install.asm.diskGroup.redundancy=
 
 #-------------------------------------------------------------------------------
 # Allocation unit size to be used by ASM.
@@ -371,7 +371,7 @@ oracle.install.asm.diskGroup.redundancy=EXTERNAL
 # size unit is MB
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.AUSize=4
+oracle.install.asm.diskGroup.AUSize=1
 
 #-------------------------------------------------------------------------------
 # Failure Groups for the disk group
@@ -392,7 +392,7 @@ oracle.install.asm.diskGroup.FailureGroups=
 #     oracle.install.asm.diskGroup.disksWithFailureGroupNames=\\.\ORCLDISKDATA0,FGName,\\.\ORCLDISKDATA1,FGName
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.disksWithFailureGroupNames=/dev/oracleasm/asm-disk3,,/dev/oracleasm/asm-disk2,,/dev/oracleasm/asm-disk4,,/dev/oracleasm/asm-disk1,
+oracle.install.asm.diskGroup.disksWithFailureGroupNames=
 
 #-------------------------------------------------------------------------------
 # List of disks to create a ASM DiskGroup
@@ -404,7 +404,7 @@ oracle.install.asm.diskGroup.disksWithFailureGroupNames=/dev/oracleasm/asm-disk3
 #     oracle.install.asm.diskGroup.disks=\\.\ORCLDISKDATA0,\\.\ORCLDISKDATA1
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.disks=/dev/oracleasm/asm-disk3,/dev/oracleasm/asm-disk2,/dev/oracleasm/asm-disk4,/dev/oracleasm/asm-disk1
+oracle.install.asm.diskGroup.disks=
 
 #-------------------------------------------------------------------------------
 # List of failure groups to be marked as QUORUM.
@@ -423,7 +423,7 @@ oracle.install.asm.diskGroup.quorumFailureGroupNames=
 #     oracle.install.asm.diskGroup.diskDiscoveryString=\\.\ORCLDISK*
 #
 #-------------------------------------------------------------------------------
-oracle.install.asm.diskGroup.diskDiscoveryString=/dev/oracleasm/*
+oracle.install.asm.diskGroup.diskDiscoveryString=
 
 #-------------------------------------------------------------------------------
 # Password for ASMSNMP account
@@ -581,7 +581,7 @@ oracle.install.config.emAdminPassword=
 #
 # If this option is selected, password should be specified on the console.
 #-------------------------------------------------------------------------------------------------------
-oracle.install.crs.rootconfig.executeRootScript=false
+oracle.install.crs.rootconfig.executeRootScript=true
 
 #--------------------------------------------------------------------------------------
 # Specify the configuration method to be used for automatic root script execution.
@@ -590,7 +590,7 @@ oracle.install.crs.rootconfig.executeRootScript=false
 #   - ROOT
 #   - SUDO
 #--------------------------------------------------------------------------------------
-oracle.install.crs.rootconfig.configMethod=
+oracle.install.crs.rootconfig.configMethod=ROOT
 #--------------------------------------------------------------------------------------
 # Specify the absolute path of the sudo program.
 #

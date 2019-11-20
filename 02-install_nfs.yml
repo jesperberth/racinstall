@@ -9,6 +9,11 @@
     ora_sid_node1: testsid1
     ora_sid_node2: testsid2
     ora_password: Cflex123
+    rac-clustername: rac-cluster
+    rac-node1fqdn:
+    rac-node2fqdn:
+    rac-node1vip:
+    rac-node2vip:
     rac_server1: dbrac1
     rac_server2: dbrac2
     nfsserver: dbstorage.vmcflex.local
@@ -320,7 +325,15 @@
       when: 
         - ansible_hostname == rac_server1 
         - gridinst_result.stat.exists == False
-    
+
+    - name: creates directory for ocr_configuration
+      file:
+       path: /u01/shared_config/ocr_configuration
+       state: directory
+       owner: oracle
+       group: oinstall
+       mode: 0755
+
 #    - name: restart rac nodes
 #      reboot:
 #        reboot_timeout: 360
