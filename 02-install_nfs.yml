@@ -42,16 +42,27 @@
        name:  net-tools
        state: latest
 
-#    - name: copy cvuqdisk.rpm
-#      copy:
-#        src:  /root/install/software/cvuqdisk-1.0.10-1.rpm
-#        dest:  /root/install/software/cvuqdisk-1.0.10-1.rpm
-#        force: no
+    - name: install package groups
+      yum:
+        name: 
+          - "@Development tools"
+          - "@Hardware Monitoring Utilities"
+          - "@Large Systems Performance"
+          - "@Network file system client"
+          - "@Performance Tools"
+          - "@Compatibility Libraries"
+        state: present
 
-#    - name: Install cvuqdisk-1.0.10-1.rpm
-#      yum:
-#        name: /root/install/software/cvuqdisk-1.0.10-1.rpm
-#        state: present
+    - name: copy cvuqdisk.rpm
+      copy:
+        src:  /root/install/software/cvuqdisk-1.0.10-1.rpm
+        dest:  /root/install/software/cvuqdisk-1.0.10-1.rpm
+        force: no
+
+    - name: Install cvuqdisk-1.0.10-1.rpm
+      yum:
+        name: /root/install/software/cvuqdisk-1.0.10-1.rpm
+        state: present
 
     # Set Security
 
