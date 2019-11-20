@@ -308,7 +308,14 @@
        owner: oracle
        group: oinstall
        recurse: yes
-    
+
+    - name: Create a 2048-bit SSH key for user oracle
+      user:
+        name: oracle
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+
     # Set Oracle as Owner on /u01
 
     - name: Get stat on /u01  
