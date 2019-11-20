@@ -9,11 +9,12 @@
     ora_sid_node1: testsid1
     ora_sid_node2: testsid2
     ora_password: Cflex123
-    rac-clustername: rac-cluster
-    rac-node1fqdn: rac-node01.redhat.local
-    rac-node2fqdn: rac-node02.redhat.local
-    rac-node1vip: rac-vip01.redhat.local
-    rac-node2vip: rac-vip02.redhat.local
+    rac_clustername: rac-cluster
+    rac_scanname: rac-scan
+    rac_node1fqdn: rac-node01.redhat.local
+    rac_node2fqdn: rac-node02.redhat.local
+    rac_node1vip: rac-vip01.redhat.local
+    rac_node2vip: rac-vip02.redhat.local
     rac_server1: rac-node01
     rac_server2: rac-node02
     nfsserver: storagenfs.redhat.local

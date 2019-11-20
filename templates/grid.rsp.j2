@@ -115,7 +115,7 @@ oracle.install.asm.OSASM=dba
 #-------------------------------------------------------------------------------
 # Specify a name for SCAN
 #-------------------------------------------------------------------------------
-oracle.install.crs.config.gpnp.scanName=dbrac-scan
+oracle.install.crs.config.gpnp.scanName={{ rac_scanname }}
 
 #-------------------------------------------------------------------------------
 # Specify a unused port number for SCAN service
@@ -159,7 +159,7 @@ oracle.install.crs.config.memberClusterManifestFile=
 #
 # Applicable only for STANDALONE and DOMAIN cluster configuration
 #-------------------------------------------------------------------------------
-oracle.install.crs.config.clusterName={{ rac-clustername }}
+oracle.install.crs.config.clusterName={{ rac_clustername }}
 
 #-------------------------------------------------------------------------------
 # Applicable only for STANDALONE, DOMAIN, MEMBERDB cluster configuration.
@@ -235,7 +235,7 @@ oracle.install.crs.config.sites=
 # hostnameprefix:lowerbound-upperbound:hostnamesuffix:vipsuffix:role of node
 #
 #-------------------------------------------------------------------------------
- oracle.install.crs.config.clusterNodes={{ rac-node1fqdn }}:{{ rac-node1vip }}:HUB,{{ rac-node2fqdn }}:{{ rac-node2vip }}:HUB
+ oracle.install.crs.config.clusterNodes={{ rac_node1fqdn }}:{{ rac_node1vip }}:HUB,{{ rac_node2fqdn }}:{{ rac_node2vip }}:HUB
 
 #-------------------------------------------------------------------------------
 # The value should be a comma separated strings where each string is as shown below
