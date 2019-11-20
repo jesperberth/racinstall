@@ -10,13 +10,13 @@
     ora_sid_node2: testsid2
     ora_password: Cflex123
     rac-clustername: rac-cluster
-    rac-node1fqdn:
-    rac-node2fqdn:
-    rac-node1vip:
-    rac-node2vip:
-    rac_server1: dbrac1
-    rac_server2: dbrac2
-    nfsserver: dbstorage.vmcflex.local
+    rac-node1fqdn: rac-node01.redhat.local
+    rac-node2fqdn: rac-node02.redhat.local
+    rac-node1vip: rac-vip01.redhat.local
+    rac-node2vip: rac-vip02.redhat.local
+    rac_server1: rac-node01
+    rac_server2: rac-node02
+    nfsserver: storagenfs.redhat.local
  
   tasks:
     # Install Software
@@ -334,9 +334,14 @@
        group: oinstall
        mode: 0755
 
-#    - name: restart rac nodes
-#      reboot:
-#        reboot_timeout: 360
+    - name: create oracle grid response file
+      template:
+       src: templates/grid.rsp.j2
+       dest: /home/oracle/grid.rsp
+
+    - name: restart rac nodes
+      reboot:
+        reboot_timeout: 360
 
 #    - name: create oracle response file
 #      template:
