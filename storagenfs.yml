@@ -53,7 +53,7 @@
       lvol:
        vg: vg.data
        lv: lv.shared_grid
-       size: 20G
+       size: 50G
     
     - name: create filesystem xfs on lv.shared_grid
       filesystem:
@@ -79,7 +79,7 @@
       lvol:
        vg: vg.data
        lv: lv.shared_home
-       size: 20G
+       size: 30G
     
     - name: create filesystem xfs on lv.shared_home
       filesystem:
@@ -105,7 +105,7 @@
       lvol:
        vg: vg.data
        lv: lv.shared_data
-       size: 20G
+       size: 30G
     
     - name: create filesystem xfs on lv.shared_data
       filesystem:
