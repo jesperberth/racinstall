@@ -45,6 +45,7 @@
     - name: install package groups
       yum:
         name: 
+          - "@Server with GUI"
           - "@Development tools"
           - "@Hardware Monitoring Utilities"
           - "@Large Systems Performance"
@@ -400,6 +401,9 @@
       template:
        src: templates/grid.rsp.j2
        dest: /home/oracle/grid.rsp
+
+    - name: Set boot to graphical
+      shell: systemctl set-default graphical.target
 
     - name: restart rac nodes
       reboot:
