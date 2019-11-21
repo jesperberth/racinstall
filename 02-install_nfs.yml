@@ -45,7 +45,7 @@
     - name: install package groups
       yum:
         name: 
-          - "@Server with GUI"
+          - "@Server with gui"
           - "@Development tools"
           - "@Hardware Monitoring Utilities"
           - "@Large Systems Performance"
@@ -118,11 +118,11 @@
         enabled: no
         state: stopped
 
-#    - name: Disable avahi-daemon
-#      systemd:
-#        name: avahi-daemon
-#        enabled: no
-#        state: stopped
+    - name: Disable avahi-daemon
+      systemd:
+        name: avahi-daemon
+        enabled: no
+        state: stopped
 
     # Configure firewall
     
