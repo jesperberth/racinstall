@@ -51,7 +51,6 @@
           - "@Network file system client"
           - "@Performance Tools"
           - "@Compatibility Libraries"
-          - "@Server with GUI"
         state: present
 
     - name: copy cvuqdisk.rpm
