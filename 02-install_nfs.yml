@@ -45,13 +45,13 @@
     - name: install package groups
       yum:
         name: 
-          - "@Server with gui"
           - "@Development tools"
           - "@Hardware Monitoring Utilities"
           - "@Large Systems Performance"
           - "@Network file system client"
           - "@Performance Tools"
           - "@Compatibility Libraries"
+          - "@Server with GUI"
         state: present
 
     - name: copy cvuqdisk.rpm
