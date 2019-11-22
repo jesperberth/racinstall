@@ -45,6 +45,7 @@
     - name: install package groups
       yum:
         name: 
+          - "@Server with gui"
           - "@Development tools"
           - "@Hardware Monitoring Utilities"
           - "@Large Systems Performance"
