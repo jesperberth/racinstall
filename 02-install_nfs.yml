@@ -54,6 +54,11 @@
           - "@Compatibility Libraries"
         state: present
 
+    - name: creates directory for software install
+      file:
+       path: /root/install/software
+       state: directory
+
     - name: copy cvuqdisk.rpm
       copy:
         src:  /root/install/software/cvuqdisk-1.0.10-1.rpm
@@ -213,11 +218,6 @@
     - name: creates directory for oracle users scripts
       file:
        path: /home/oracle/scripts
-       state: directory
-
-    - name: creates directory for software install
-      file:
-       path: /root/install/software
        state: directory
 
 #    - name: create setENV.sh file in oracle users scripts
